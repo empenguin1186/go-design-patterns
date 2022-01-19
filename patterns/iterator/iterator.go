@@ -2,9 +2,13 @@ package iterator
 
 import "fmt"
 
+type Aggregate interface {
+	Iterator() Iterator
+}
+
 type Iterator interface {
 	HasNext() bool
-	Next() Book
+	Next() (*Book, error)
 }
 
 type Book struct {
@@ -46,4 +50,31 @@ func (b *BookShelf) GetLength() int {
 
 func (b *BookShelf) Iterator() Iterator {
 	return NewBookShelfIterator(b)
+}
+
+type BookShelfIterator struct {
+	bookShelf *BookShelf
+	index     int
+}
+
+func NewBookShelfIterator(bookShelf *BookShelf) *BookShelfIterator {
+	return &BookShelfIterator{bookShelf: bookShelf, index: 0}
+}
+
+func (b *BookShelfIterator) HasNext() bool {
+	if b.index < len(b.bookShelf.books) {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (b *BookShelfIterator) Next() (*Book, error) {
+	if b.index < len(b.bookShelf.books) {
+		book := b.bookShelf.books[b.index]
+		b.index += 1
+		return book, nil
+	} else {
+		return nil, fmt.Errorf("index out of bounds. index=%d", b.index)
+	}
 }
