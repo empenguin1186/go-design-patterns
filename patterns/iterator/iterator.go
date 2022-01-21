@@ -8,73 +8,73 @@ type Aggregate interface {
 
 type Iterator interface {
 	HasNext() bool
-	Next() (*Book, error)
+	Next() (*Item, error)
 }
 
-type Book struct {
+type Item struct {
 	name string
 }
 
-func NewBook(name string) *Book {
-	return &Book{name}
+func NewItem(name string) *Item {
+	return &Item{name}
 }
 
-func (b Book) GetName() string {
-	return b.name
+func (i *Item) GetName() string {
+	return i.name
 }
 
-type BookShelf struct {
-	books []*Book
+type ShoppingCart struct {
+	items []*Item
 }
 
-func NewBookShelf() *BookShelf {
-	return &BookShelf{
-		books: []*Book{},
+func NewShoppingCart() *ShoppingCart {
+	return &ShoppingCart{
+		items: []*Item{},
 	}
 }
 
-func (b *BookShelf) GetBookAt(index int) (*Book, error) {
-	if len(b.books)-1 < index {
+func (s *ShoppingCart) GetItemAt(index int) (*Item, error) {
+	if len(s.items)-1 < index {
 		return nil, fmt.Errorf("index out of bounds. index=%d", index)
 	}
-	return b.books[index], nil
+	return s.items[index], nil
 }
 
-func (b *BookShelf) AppendBook(book *Book) {
-	b.books = append(b.books, book)
+func (s *ShoppingCart) AppendItem(item *Item) {
+	s.items = append(s.items, item)
 }
 
-func (b *BookShelf) GetLength() int {
-	return len(b.books)
+func (s *ShoppingCart) GetLength() int {
+	return len(s.items)
 }
 
-func (b *BookShelf) Iterator() Iterator {
-	return NewBookShelfIterator(b)
+func (s *ShoppingCart) Iterator() Iterator {
+	return NewShoppingCartIterator(s)
 }
 
-type BookShelfIterator struct {
-	bookShelf *BookShelf
-	index     int
+type ShoppingCartIterator struct {
+	shoppingCart *ShoppingCart
+	index        int
 }
 
-func NewBookShelfIterator(bookShelf *BookShelf) *BookShelfIterator {
-	return &BookShelfIterator{bookShelf: bookShelf, index: 0}
+func NewShoppingCartIterator(shoppingCart *ShoppingCart) *ShoppingCartIterator {
+	return &ShoppingCartIterator{shoppingCart: shoppingCart, index: 0}
 }
 
-func (b *BookShelfIterator) HasNext() bool {
-	if b.index < len(b.bookShelf.books) {
+func (s *ShoppingCartIterator) HasNext() bool {
+	if s.index < len(s.shoppingCart.items) {
 		return true
 	} else {
 		return false
 	}
 }
 
-func (b *BookShelfIterator) Next() (*Book, error) {
-	if b.index < len(b.bookShelf.books) {
-		book := b.bookShelf.books[b.index]
-		b.index += 1
-		return book, nil
+func (s *ShoppingCartIterator) Next() (*Item, error) {
+	if s.index < len(s.shoppingCart.items) {
+		item := s.shoppingCart.items[s.index]
+		s.index += 1
+		return item, nil
 	} else {
-		return nil, fmt.Errorf("index out of bounds. index=%d", b.index)
+		return nil, fmt.Errorf("index out of bounds. index=%d", s.index)
 	}
 }

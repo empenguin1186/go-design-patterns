@@ -7,12 +7,12 @@ import (
 )
 
 func main() {
-	bookShelf := iterator.NewBookShelf()
-	bookShelf.AppendBook(iterator.NewBook("HOGE"))
-	bookShelf.AppendBook(iterator.NewBook("FUGA"))
-	bookShelf.AppendBook(iterator.NewBook("PIYO"))
+	shoppingCart := iterator.NewShoppingCart()
+	shoppingCart.AppendItem(iterator.NewItem("HOGE"))
+	shoppingCart.AppendItem(iterator.NewItem("FUGA"))
+	shoppingCart.AppendItem(iterator.NewItem("PIYO"))
 
-	i := bookShelf.Iterator()
+	i := shoppingCart.Iterator()
 	for i.HasNext() {
 		book, err := i.Next()
 		if err != nil {
