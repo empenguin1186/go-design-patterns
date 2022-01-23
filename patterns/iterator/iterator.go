@@ -64,9 +64,8 @@ func NewShoppingCartIterator(shoppingCart *ShoppingCart) *ShoppingCartIterator {
 func (s *ShoppingCartIterator) HasNext() bool {
 	if s.index < len(s.shoppingCart.items) {
 		return true
-	} else {
-		return false
 	}
+	return false
 }
 
 func (s *ShoppingCartIterator) Next() (*Item, error) {
@@ -74,7 +73,6 @@ func (s *ShoppingCartIterator) Next() (*Item, error) {
 		item := s.shoppingCart.items[s.index]
 		s.index += 1
 		return item, nil
-	} else {
-		return nil, fmt.Errorf("index out of bounds. index=%d", s.index)
 	}
+	return nil, fmt.Errorf("index out of bounds. index=%d", s.index)
 }
