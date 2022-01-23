@@ -52,26 +52,30 @@ func (s *ShoppingCart) Iterator() Iterator {
 	return NewShoppingCartIterator(s)
 }
 
+func (s *ShoppingCart) GetItems() []*Item {
+	return s.items
+}
+
 type ShoppingCartIterator struct {
 	shoppingCart *ShoppingCart
 	index        int
 }
 
 func NewShoppingCartIterator(shoppingCart *ShoppingCart) *ShoppingCartIterator {
-	return &ShoppingCartIterator{shoppingCart: shoppingCart, index: 0}
+	return &ShoppingCartIterator{shoppingCart: shoppingCart, index: len(shoppingCart.items) - 1}
 }
 
 func (s *ShoppingCartIterator) HasNext() bool {
-	if s.index < len(s.shoppingCart.items) {
+	if s.index > -1 {
 		return true
 	}
 	return false
 }
 
 func (s *ShoppingCartIterator) Next() (*Item, error) {
-	if s.index < len(s.shoppingCart.items) {
+	if s.index > -1 {
 		item := s.shoppingCart.items[s.index]
-		s.index += 1
+		s.index -= 1
 		return item, nil
 	}
 	return nil, fmt.Errorf("index out of bounds. index=%d", s.index)
