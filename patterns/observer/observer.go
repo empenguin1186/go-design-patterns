@@ -3,81 +3,57 @@ package observer
 import (
 	"fmt"
 	"math/rand"
-	"time"
 )
 
 type Observer interface {
-	Update(generator *NumberGenerator)
+	Notify(generator MessageGenerator)
 }
 
-type NumberGenerator struct {
-	observers []Observer
-	GetNumber func() int
-	Execute   func()
-}
-
-func NewNumberGenerator(numberManager NumberManager) *NumberGenerator {
-	return &NumberGenerator{observers: []Observer{}, GetNumber: numberManager.GetNumber, Execute: numberManager.Execute}
-}
-
-func (g *NumberGenerator) AddObserver(observer Observer) {
-	g.observers = append(g.observers, observer)
-}
-
-func (g *NumberGenerator) NotifyObservers() {
-	for _, e := range g.observers {
-		e.Update(g)
-	}
-}
-
-type NumberManager interface {
-	GetNumber() int
+type MessageGenerator interface {
+	AddObserver(observer Observer)
+	DeleteObserver(observer Observer)
+	GetMessage() string
 	Execute()
 }
 
-type RandomNumberGenerator struct {
-	number          int
-	notifyObservers func()
+type RandomMessageGenerator struct {
+	observers []Observer
+	message   string
 }
 
-func NewRandomNumberGenerator() *RandomNumberGenerator {
-	return &RandomNumberGenerator{number: 0, notifyObservers: NumberGenerator{}.NotifyObservers}
+func (r *RandomMessageGenerator) AddObserver(observer Observer) {
+	r.observers = append(r.observers, observer)
 }
 
-func (r *RandomNumberGenerator) GetNumber() int {
-	return r.number
+func (r *RandomMessageGenerator) DeleteObserver(observer Observer) {
+	var observers []Observer
+	for _, e := range r.observers {
+		if e != observer {
+			observers = append(observers, e)
+		}
+	}
+	r.observers = observers
 }
 
-func (r *RandomNumberGenerator) Execute() {
-	for i := 0; i < 20; i++ {
-		r.number = rand.Intn(100)
-		r.notifyObservers()
+func (r *RandomMessageGenerator) GetMessage() string {
+	return r.message
+}
+
+func (r *RandomMessageGenerator) Execute() {
+	r.message = fmt.Sprintf("message changed. number=%d", rand.Intn(100))
+	for _, e := range r.observers {
+		e.Notify(r)
 	}
 }
 
-type DigitObserver struct{}
+type SlackNotifier struct{}
 
-func NewDigitObserver() *DigitObserver {
-	return &DigitObserver{}
+func (s *SlackNotifier) Notify(generator MessageGenerator) {
+	fmt.Printf("send message to slack. message = \"%s\"\n", generator.GetMessage())
 }
 
-func (d *DigitObserver) Update(generator *NumberGenerator) {
-	fmt.Printf("DigitObserver:%d", generator.GetNumber())
-	time.Sleep(time.Millisecond * 100)
-}
+type EmailNotifier struct{}
 
-type GraphObserver struct{}
-
-func NewGraphObserver() *GraphObserver {
-	return &GraphObserver{}
-}
-
-func (g *GraphObserver) Update(generator *NumberGenerator) {
-	fmt.Println("GraphObserver")
-	count := generator.GetNumber()
-	for i := 0; i < count; i++ {
-		fmt.Print("*")
-	}
-	fmt.Println("*")
-	time.Sleep(time.Millisecond * 100)
+func (e *EmailNotifier) Notify(generator MessageGenerator) {
+	fmt.Printf("send message to email. message = \"%s\"\n", generator.GetMessage())
 }
