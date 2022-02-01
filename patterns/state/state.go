@@ -2,13 +2,17 @@ package state
 
 import "fmt"
 
+var sundaySingleton *sunday = &sunday{}
+var mondaySingleton *monday = &monday{}
+var tuesdaySingleton *tuesDay = &tuesDay{}
+
 type context struct {
 	dayOfWeekStates []DayOfWeekState
 	index           int
 }
 
 func NewContext() *context {
-	return &context{dayOfWeekStates: []DayOfWeekState{&sunday{}, &monday{}, &tuesDay{}}, index: 0}
+	return &context{dayOfWeekStates: []DayOfWeekState{sundaySingleton, mondaySingleton, tuesdaySingleton}, index: 0}
 }
 
 func (c *context) OneDayPass() {
