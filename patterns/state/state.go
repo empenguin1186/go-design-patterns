@@ -26,7 +26,7 @@ func (c *context) OneDayPass() {
 func (c *context) GetMessage(hour int) string {
 	dayOfWeek := c.dayOfWeekStates[c.index]
 	var text string
-	if dayOfWeek.isStoreOpen(hour) {
+	if dayOfWeek.IsStoreOpen(hour) {
 		text = "is open"
 	} else {
 		text = "is close"
@@ -36,7 +36,7 @@ func (c *context) GetMessage(hour int) string {
 
 type DayOfWeekState interface {
 	ToString() string
-	isStoreOpen(hour int) bool
+	IsStoreOpen(hour int) bool
 }
 
 type sunday struct{}
@@ -45,7 +45,7 @@ func (s *sunday) ToString() string {
 	return "Sunday"
 }
 
-func (s *sunday) isStoreOpen(hour int) bool {
+func (s *sunday) IsStoreOpen(hour int) bool {
 	if hour >= 10 && hour <= 17 {
 		return true
 	}
@@ -58,7 +58,7 @@ func (m *monday) ToString() string {
 	return "Monday"
 }
 
-func (m *monday) isStoreOpen(hour int) bool {
+func (m *monday) IsStoreOpen(hour int) bool {
 	return false
 }
 
@@ -68,7 +68,7 @@ func (t *tuesDay) ToString() string {
 	return "TuesDay"
 }
 
-func (t *tuesDay) isStoreOpen(hour int) bool {
+func (t *tuesDay) IsStoreOpen(hour int) bool {
 	if hour >= 9 && hour <= 21 {
 		return true
 	}
