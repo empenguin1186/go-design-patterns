@@ -5,7 +5,7 @@ import (
 	"github.com/empenguin1186/go-design-patterns/patterns/iterator"
 )
 
-func msain() {
+func main() {
 	shoppingCart := iterator.NewShoppingCart()
 	shoppingCart.AppendItem(iterator.NewItem("HOGE"))
 	shoppingCart.AppendItem(iterator.NewItem("FUGA"))
